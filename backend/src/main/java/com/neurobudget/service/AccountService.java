@@ -2,7 +2,6 @@ package com.neurobudget.service;
 
 import com.neurobudget.dto.AccountDTO;
 import com.neurobudget.entity.Account;
-import com.neurobudget.entity.Transaction;
 import com.neurobudget.repository.AccountRepository;
 import com.neurobudget.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ public class AccountService {
     private UserRepository userRepository;
 
     @Transactional
+    @SuppressWarnings("null")
     public AccountDTO.Response createAccount(Long userId, AccountDTO.CreateRequest request) {
         var user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -54,6 +54,7 @@ public class AccountService {
     }
 
     @Transactional
+    @SuppressWarnings("null")
     public AccountDTO.Response updateAccount(Long accountId, Long userId, AccountDTO.UpdateRequest request) {
         Account account = accountRepository.findByIdAndUserId(accountId, userId)
             .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -69,6 +70,7 @@ public class AccountService {
     }
 
     @Transactional
+    @SuppressWarnings("null")
     public void deleteAccount(Long accountId, Long userId) {
         Account account = accountRepository.findByIdAndUserId(accountId, userId)
             .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -81,6 +83,7 @@ public class AccountService {
         BigDecimal totalCash = BigDecimal.ZERO;
         BigDecimal totalCredit = BigDecimal.ZERO;
         BigDecimal totalDebt = BigDecimal.ZERO;
+        BigDecimal totalInvestments = BigDecimal.ZERO;
         BigDecimal minimumPaymentsDue = BigDecimal.ZERO;
 
         for (Account account : accounts) {
@@ -102,6 +105,7 @@ public class AccountService {
                         minimumPaymentsDue = minimumPaymentsDue.add(account.getMinimumPayment());
                     }
                 }
+                case INVESTMENT -> totalInvestments = totalInvestments.add(account.getBalance());
             }
         }
 
@@ -111,6 +115,7 @@ public class AccountService {
         summary.setTotalCash(totalCash);
         summary.setTotalCredit(totalCredit);
         summary.setTotalDebt(totalDebt);
+        summary.setTotalInvestments(totalInvestments);
         summary.setAvailableToSpend(availableToSpend);
         summary.setUpcomingBills(BigDecimal.ZERO); // TODO: Implement recurring transactions
         summary.setMinimumPaymentsDue(minimumPaymentsDue);

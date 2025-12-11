@@ -70,6 +70,7 @@ public class AccountDTO {
         private BigDecimal totalCash;
         private BigDecimal totalCredit;
         private BigDecimal totalDebt;
+        private BigDecimal totalInvestments;
         private BigDecimal availableToSpend;
         private BigDecimal upcomingBills;
         private BigDecimal minimumPaymentsDue;
