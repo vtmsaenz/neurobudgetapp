@@ -68,7 +68,8 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionDTO.Response updateTransaction(Long transactionId, Long userId, 
+    @SuppressWarnings("null")
+    public TransactionDTO.Response updateTransaction(Long transactionId, Long userId,
                                                      TransactionDTO.UpdateRequest request) {
         Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId)
             .orElseThrow(() -> new RuntimeException("Transaction not found"));
@@ -89,6 +90,7 @@ public class TransactionService {
     }
 
     @Transactional
+    @SuppressWarnings("null")
     public void deleteTransaction(Long transactionId, Long userId) {
         Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId)
             .orElseThrow(() -> new RuntimeException("Transaction not found"));
