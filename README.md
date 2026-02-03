@@ -97,25 +97,6 @@ neurobudget/
 └── README.md
 ```
 
-## 🎤 Interview Talking Points
-
-### Architecture
-- RESTful API design with Spring Boot
-- JWT authentication and authorization
-- React Native for cross-platform mobile development
-- PostgreSQL for relational data modeling
-
-### Key Technical Decisions
-- Why JWT over session-based auth
-- Multi-account cashflow calculation algorithm
-- Emotion tagging data model and insights generation
-- CSV parsing and duplicate detection strategy
-
-### What I'd Improve Next
-- Real bank API integration (Plaid/Yodlee)
-- WebSocket notifications for real-time alerts
-- Machine learning for spending pattern prediction
-- Biometric authentication
 
 ## 📄 License
 
