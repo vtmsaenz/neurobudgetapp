@@ -1,0 +1,8 @@
+com/neurobudget/entity/Transaction.class
+com/neurobudget/entity/Transaction$TriggerTag.class
+com/neurobudget/entity/User$Role.class
+com/neurobudget/entity/User.class
+com/neurobudget/entity/Account$AccountType.class
+com/neurobudget/entity/Transaction$EmotionTag.class
+com/neurobudget/entity/Transaction$TransactionType.class
+com/neurobudget/entity/Account.class

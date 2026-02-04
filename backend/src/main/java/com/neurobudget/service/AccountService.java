@@ -117,7 +117,7 @@ public class AccountService {
         summary.setTotalDebt(totalDebt);
         summary.setTotalInvestments(totalInvestments);
         summary.setAvailableToSpend(availableToSpend);
-        summary.setUpcomingBills(BigDecimal.ZERO); // TODO: Implement recurring transactions
+        summary.setUpcomingBills(BigDecimal.ZERO); 
         summary.setMinimumPaymentsDue(minimumPaymentsDue);
 
         return summary;
