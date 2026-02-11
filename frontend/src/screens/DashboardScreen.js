@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { accountService } from '../services/accountService';
 import { transactionService } from '../services/transactionService';
 
@@ -17,25 +18,29 @@ export default function DashboardScreen({ navigation }) {
   const [cashflowSummary, setCashflowSummary] = useState(null);
   const [recentTransactions, setRecentTransactions] = useState([]);
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadDashboardData();
+    }, [])
+  );
 
   const loadDashboardData = async () => {
     try {
-      const [summary, transactions] = await Promise.all([
-        accountService.getCashflowSummary(),
-        transactionService.getTransactions(),
-      ]);
-      
+      const summary = await accountService.getCashflowSummary();
       setCashflowSummary(summary);
-      setRecentTransactions(transactions.slice(0, 5)); // Get 5 most recent
     } catch (error) {
-      console.error('Failed to load dashboard:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+      console.error('Failed to load cashflow summary:', error);
     }
+
+    try {
+      const transactions = await transactionService.getTransactions();
+      setRecentTransactions(transactions.slice(0, 5));
+    } catch (error) {
+      console.error('Failed to load transactions:', error);
+    }
+
+    setLoading(false);
+    setRefreshing(false);
   };
 
   const onRefresh = () => {

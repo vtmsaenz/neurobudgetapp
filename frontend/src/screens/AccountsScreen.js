@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { accountService } from '../services/accountService';
 import RNPickerSelect from 'react-native-picker-select';
 
@@ -26,9 +27,11 @@ export default function AccountsScreen() {
     minimumPayment: '',
   });
 
-  useEffect(() => {
-    loadAccounts();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadAccounts();
+    }, [])
+  );
 
   const loadAccounts = async () => {
     try {

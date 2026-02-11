@@ -7,6 +7,7 @@
 /Users/valesaenz/Documents/NeuroBudgetApp/backend/src/main/java/com/neurobudget/service/AccountService.java
 /Users/valesaenz/Documents/NeuroBudgetApp/backend/src/main/java/com/neurobudget/repository/TransactionRepository.java
 /Users/valesaenz/Documents/NeuroBudgetApp/backend/src/main/java/com/neurobudget/security/UserDetailsServiceImpl.java
+/Users/valesaenz/Documents/NeuroBudgetApp/backend/src/main/java/com/neurobudget/controller/AccountController.java
 /Users/valesaenz/Documents/NeuroBudgetApp/backend/src/main/java/com/neurobudget/entity/Transaction.java
 /Users/valesaenz/Documents/NeuroBudgetApp/backend/src/main/java/com/neurobudget/repository/UserRepository.java
 /Users/valesaenz/Documents/NeuroBudgetApp/backend/src/main/java/com/neurobudget/controller/AuthController.java

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { transactionService } from '../services/transactionService';
 
 export default function TransactionsScreen({ navigation }) {
@@ -15,9 +16,11 @@ export default function TransactionsScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    loadTransactions();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadTransactions();
+    }, [])
+  );
 
   const loadTransactions = async () => {
     try {
