@@ -111,11 +111,6 @@ neurobudget/
 - Emotion tagging data model and insights generation
 - CSV parsing and duplicate detection strategy
 
-### What I'd Improve Next
-- Real bank API integration (Plaid/Yodlee)
-- WebSocket notifications for real-time alerts
-- Machine learning for spending pattern prediction
-- Biometric authentication
 
 ## 📄 License
 

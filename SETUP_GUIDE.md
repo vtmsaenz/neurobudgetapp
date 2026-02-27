@@ -1,13 +1,13 @@
 # NeuroBudget - Setup & Development Guide
 
-## 🎯 Project Overview
+## Project Overview
 
 NeuroBudget is a mobile-first personal finance app built with:
 - **Backend**: Java Spring Boot REST API with PostgreSQL
 - **Frontend**: React Native mobile app with Expo
 - **Features**: Multi-account tracking, emotion tagging, cashflow calculations
 
-## 📋 Prerequisites
+##  Prerequisites
 
 ### Backend Requirements
 - Java 17 or higher
@@ -20,7 +20,7 @@ NeuroBudget is a mobile-first personal finance app built with:
 - Expo CLI: `npm install -g expo-cli`
 - Expo Go app on your phone (iOS/Android)
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Step 1: Start the Backend
 
@@ -152,45 +152,6 @@ SELECT * FROM users;
 
 4. **View logs** in terminal where you ran `npm start`
 
-## 🎨 What's Built vs. What's Left
-
-### ✅ Backend Complete
-- User authentication with JWT
-- User, Account, Transaction entities
-- Full CRUD REST APIs
-- Spring Security configuration
-- Database migrations
-- Repository layer
-- Service layer with business logic
-- Cashflow calculation logic
-
-### ✅ Frontend Started
-- Project structure
-- API service layer
-- Authentication context
-- Navigation setup
-- Login screen
-
-### 🚧 Frontend Needs Completion
-You still need to create these screens:
-- `RegisterScreen.js` - User registration
-- `DashboardScreen.js` - Main dashboard with cashflow summary
-- `AccountsScreen.js` - List and manage accounts
-- `TransactionsScreen.js` - List transactions
-- `AddTransactionScreen.js` - Add/edit transactions with emotion tagging
-- `ProfileScreen.js` - User profile and settings
-
-I can help you build these screens next!
-
-## 📝 Interview Talking Points
-
-### Architecture
-- **RESTful API** with Spring Boot following best practices
-- **JWT authentication** with token refresh mechanism
-- **Layered architecture**: Controller → Service → Repository → Entity
-- **React Native** for true cross-platform mobile development
-- **React Context API** for state management
-- **Axios interceptors** for automatic token refresh
 
 ### Key Technical Decisions
 
@@ -217,18 +178,8 @@ I can help you build these screens next!
    - Refresh tokens for extended sessions
    - CORS configured for mobile app origin
 
-### What Would You Improve?
 
-- **Real bank integration** (Plaid API)
-- **WebSocket notifications** for real-time alerts
-- **Background job for spending analysis** (Spring @Scheduled)
-- **Unit and integration tests** (JUnit, MockMVC)
-- **CI/CD pipeline** (GitHub Actions)
-- **Docker containerization** for backend deployment
-- **Biometric auth** on mobile
-- **Offline support** with local SQLite sync
-
-## 🐛 Troubleshooting
+##  Troubleshooting demo version notes
 
 ### Backend won't start
 - Check PostgreSQL is running: `docker ps`
@@ -245,7 +196,7 @@ I can help you build these screens next!
 - Reset database: `docker-compose down -v && docker-compose up -d`
 - Check migrations ran: Look for `flyway_schema_history` table
 
-## 📦 Building for Production
+##  Building for Production
 
 ### Backend
 ```bash
@@ -262,7 +213,7 @@ eas build --platform android
 eas build --platform ios
 ```
 
-## 🎓 Next Steps for Learning
+## Planned updates
 
 1. Add comprehensive tests (JUnit, React Native Testing Library)
 2. Implement CSV import functionality
@@ -271,10 +222,15 @@ eas build --platform ios
 5. Implement push notifications
 6. Add biometric authentication
 
-## Need Help?
+### Technical updates 
+- **Real bank integration** (Plaid API)
+- **WebSocket notifications** for real-time alerts
+- **Background job for spending analysis** (Spring @Scheduled)
+- **Unit and integration tests** (JUnit, MockMVC)
+- **CI/CD pipeline** (GitHub Actions)
+- **Docker containerization** for backend deployment
+- **Biometric auth** on mobile
+- **Offline support** with local SQLite sync
 
-- Backend logs: Check terminal where Spring Boot is running
-- Frontend logs: Check Expo terminal and shake device for menu
-- Database: Use `docker logs neurobudget-postgres`
 
-Ready to continue building the remaining screens?
+
