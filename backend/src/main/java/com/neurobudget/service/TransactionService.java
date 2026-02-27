@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class TransactionService {
     private AccountRepository accountRepository;
 
     @Transactional
+    @SuppressWarnings("null")
     public TransactionDTO.Response createTransaction(Long userId, TransactionDTO.CreateRequest request) {
         Account account = accountRepository.findByIdAndUserId(request.getAccountId(), userId)
             .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -40,6 +42,9 @@ public class TransactionService {
         transaction.setNotes(request.getNotes());
         transaction.setIsCreditSpend(request.getIsCreditSpend());
         transaction.setIsRecurring(request.getIsRecurring());
+
+        applyBalanceChange(account, request.getType(), request.getAmount());
+        accountRepository.save(account);
 
         transaction = transactionRepository.save(transaction);
         return mapToResponse(transaction);
@@ -74,6 +79,11 @@ public class TransactionService {
         Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId)
             .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
+        Account account = transaction.getAccount();
+
+        // Reverse the original transaction's balance effect
+        reverseBalanceChange(account, transaction.getType(), transaction.getAmount());
+
         if (request.getDescription() != null) transaction.setDescription(request.getDescription());
         if (request.getMerchant() != null) transaction.setMerchant(request.getMerchant());
         if (request.getAmount() != null) transaction.setAmount(request.getAmount());
@@ -85,6 +95,10 @@ public class TransactionService {
         if (request.getIsCreditSpend() != null) transaction.setIsCreditSpend(request.getIsCreditSpend());
         if (request.getIsRecurring() != null) transaction.setIsRecurring(request.getIsRecurring());
 
+        // Apply the updated transaction's balance effect
+        applyBalanceChange(account, transaction.getType(), transaction.getAmount());
+        accountRepository.save(account);
+
         transaction = transactionRepository.save(transaction);
         return mapToResponse(transaction);
     }
@@ -94,6 +108,11 @@ public class TransactionService {
     public void deleteTransaction(Long transactionId, Long userId) {
         Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId)
             .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        Account account = transaction.getAccount();
+        reverseBalanceChange(account, transaction.getType(), transaction.getAmount());
+        accountRepository.save(account);
+
         transactionRepository.delete(transaction);
     }
 
@@ -102,6 +121,20 @@ public class TransactionService {
         return transactionRepository.findByUserIdAndDateRange(userId, startDate, endDate).stream()
             .map(this::mapToResponse)
             .collect(Collectors.toList());
+    }
+
+    private void applyBalanceChange(Account account, Transaction.TransactionType type, BigDecimal amount) {
+        switch (type) {
+            case INCOME -> account.setBalance(account.getBalance().add(amount));
+            case EXPENSE, TRANSFER -> account.setBalance(account.getBalance().subtract(amount));
+        }
+    }
+
+    private void reverseBalanceChange(Account account, Transaction.TransactionType type, BigDecimal amount) {
+        switch (type) {
+            case INCOME -> account.setBalance(account.getBalance().subtract(amount));
+            case EXPENSE, TRANSFER -> account.setBalance(account.getBalance().add(amount));
+        }
     }
 
     private TransactionDTO.Response mapToResponse(Transaction transaction) {
