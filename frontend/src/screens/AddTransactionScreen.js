@@ -12,21 +12,24 @@ import { Picker } from '@react-native-picker/picker';
 import { transactionService } from '../services/transactionService';
 import { accountService } from '../services/accountService';
 
-export default function AddTransactionScreen({ navigation }) {
+export default function AddTransactionScreen({ navigation, route }) {
+  const existingTransaction = route.params?.transaction ?? null;
+  const isEditing = existingTransaction !== null;
+
   const [accounts, setAccounts] = useState([]);
   const [formData, setFormData] = useState({
-    accountId: null,
-    transactionDate: new Date().toISOString().split('T')[0],
-    description: '',
-    merchant: '',
-    amount: '',
-    type: 'EXPENSE',
-    category: 'Other',
-    emotion: null,
-    trigger: null,
-    notes: '',
-    isCreditSpend: false,
-    isRecurring: false,
+    accountId: existingTransaction?.accountId ?? null,
+    transactionDate: existingTransaction?.transactionDate ?? new Date().toISOString().split('T')[0],
+    description: existingTransaction?.description ?? '',
+    merchant: existingTransaction?.merchant ?? '',
+    amount: existingTransaction?.amount?.toString() ?? '',
+    type: existingTransaction?.type ?? 'EXPENSE',
+    category: existingTransaction?.category ?? 'Other',
+    emotion: existingTransaction?.emotion ?? null,
+    trigger: existingTransaction?.trigger ?? null,
+    notes: existingTransaction?.notes ?? '',
+    isCreditSpend: existingTransaction?.isCreditSpend ?? false,
+    isRecurring: existingTransaction?.isRecurring ?? false,
   });
   const [loading, setLoading] = useState(false);
 
@@ -47,7 +50,6 @@ export default function AddTransactionScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
-    // Validation
     if (!formData.accountId || !formData.merchant || !formData.amount) {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
@@ -64,11 +66,16 @@ export default function AddTransactionScreen({ navigation }) {
         amount: parseFloat(formData.amount),
       };
 
-      await transactionService.createTransaction(transactionData);
-      Alert.alert('Success', 'Transaction added successfully');
+      if (isEditing) {
+        await transactionService.updateTransaction(existingTransaction.id, transactionData);
+        Alert.alert('Success', 'Transaction updated successfully');
+      } else {
+        await transactionService.createTransaction(transactionData);
+        Alert.alert('Success', 'Transaction added successfully');
+      }
       navigation.goBack();
     } catch (error) {
-      Alert.alert('Error', 'Failed to add transaction');
+      Alert.alert('Error', isEditing ? 'Failed to update transaction' : 'Failed to add transaction');
     } finally {
       setLoading(false);
     }
@@ -127,7 +134,7 @@ export default function AddTransactionScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Add Transaction</Text>
+        <Text style={styles.title}>{isEditing ? 'Edit Transaction' : 'Add Transaction'}</Text>
 
         {/* Account Selection */}
         <Text style={styles.label}>Account *</Text>
@@ -275,7 +282,7 @@ export default function AddTransactionScreen({ navigation }) {
           disabled={loading}
         >
           <Text style={styles.submitButtonText}>
-            {loading ? 'Adding...' : 'Add Transaction'}
+            {loading ? (isEditing ? 'Saving...' : 'Adding...') : (isEditing ? 'Save Changes' : 'Add Transaction')}
           </Text>
         </TouchableOpacity>
 

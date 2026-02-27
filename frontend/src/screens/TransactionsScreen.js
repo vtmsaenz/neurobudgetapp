@@ -82,15 +82,47 @@ export default function TransactionsScreen({ navigation }) {
     return emojis[emotion] || '😶';
   };
 
+  const handleDelete = (transaction) => {
+    Alert.alert(
+      'Delete Transaction',
+      `Are you sure you want to delete "${transaction.merchant}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await transactionService.deleteTransaction(transaction.id);
+              loadTransactions();
+            } catch (error) {
+              Alert.alert('Error', 'Failed to delete transaction');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const renderTransaction = ({ item }) => (
     <TouchableOpacity
       style={styles.transactionCard}
       onPress={() => {
-        // Could navigate to transaction detail screen
         Alert.alert(
           item.merchant,
-          `${item.description}\n${item.notes || 'No notes'}`,
-          [{ text: 'OK' }]
+          `${formatCurrency(item.amount)} • ${item.category}`,
+          [
+            {
+              text: 'Edit',
+              onPress: () => navigation.navigate('AddTransaction', { transaction: item }),
+            },
+            {
+              text: 'Delete',
+              style: 'destructive',
+              onPress: () => handleDelete(item),
+            },
+            { text: 'Cancel', style: 'cancel' },
+          ]
         );
       }}
     >
