@@ -40,7 +40,22 @@ export const authService = {
 
   async isAuthenticated() {
     const token = await AsyncStorage.getItem('token');
-    return !!token;
+    if (!token) return false;
+
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(base64));
+      const isExpired = payload.exp * 1000 < Date.now();
+      if (isExpired) {
+        await AsyncStorage.clear();
+        return false;
+      }
+      return true;
+    } catch {
+      await AsyncStorage.clear();
+      return false;
+    }
   },
 
   async getCurrentUser() {

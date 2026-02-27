@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../services/authService';
+import { setLogoutCallback } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -10,6 +11,10 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAuth();
+    setLogoutCallback(() => {
+      setIsAuthenticated(false);
+      setUser(null);
+    });
   }, []);
 
   const checkAuth = async () => {

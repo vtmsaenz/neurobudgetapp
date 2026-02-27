@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import { Picker } from '@react-native-picker/picker';
 import { transactionService } from '../services/transactionService';
 import { accountService } from '../services/accountService';
 
@@ -132,24 +132,30 @@ export default function AddTransactionScreen({ navigation }) {
         {/* Account Selection */}
         <Text style={styles.label}>Account *</Text>
         <View style={styles.pickerContainer}>
-          <RNPickerSelect
-            value={formData.accountId}
+          <Picker
+            selectedValue={formData.accountId}
             onValueChange={(value) => setFormData({ ...formData, accountId: value })}
-            items={accountItems}
-            style={pickerSelectStyles}
-            placeholder={{ label: 'Select an account...', value: null }}
-          />
+            style={styles.picker}
+          >
+            <Picker.Item label="Select an account..." value={null} />
+            {accountItems.map((item) => (
+              <Picker.Item key={item.value} label={item.label} value={item.value} />
+            ))}
+          </Picker>
         </View>
 
         {/* Transaction Type */}
         <Text style={styles.label}>Type *</Text>
         <View style={styles.pickerContainer}>
-          <RNPickerSelect
-            value={formData.type}
+          <Picker
+            selectedValue={formData.type}
             onValueChange={(value) => setFormData({ ...formData, type: value })}
-            items={transactionTypes}
-            style={pickerSelectStyles}
-          />
+            style={styles.picker}
+          >
+            {transactionTypes.map((item) => (
+              <Picker.Item key={item.value} label={item.label} value={item.value} />
+            ))}
+          </Picker>
         </View>
 
         {/* Merchant */}
@@ -183,12 +189,15 @@ export default function AddTransactionScreen({ navigation }) {
         {/* Category */}
         <Text style={styles.label}>Category *</Text>
         <View style={styles.pickerContainer}>
-          <RNPickerSelect
-            value={formData.category}
+          <Picker
+            selectedValue={formData.category}
             onValueChange={(value) => setFormData({ ...formData, category: value })}
-            items={categories}
-            style={pickerSelectStyles}
-          />
+            style={styles.picker}
+          >
+            {categories.map((item) => (
+              <Picker.Item key={item.value} label={item.label} value={item.value} />
+            ))}
+          </Picker>
         </View>
 
         {/* EMOTION SECTION - The key differentiator! */}
@@ -200,24 +209,28 @@ export default function AddTransactionScreen({ navigation }) {
           
           <Text style={styles.label}>Emotion</Text>
           <View style={styles.pickerContainer}>
-            <RNPickerSelect
-              value={formData.emotion}
+            <Picker
+              selectedValue={formData.emotion}
               onValueChange={(value) => setFormData({ ...formData, emotion: value })}
-              items={emotions}
-              style={pickerSelectStyles}
-              placeholder={{ label: 'How did you feel?', value: null }}
-            />
+              style={styles.picker}
+            >
+              {emotions.map((item) => (
+                <Picker.Item key={String(item.value)} label={item.label} value={item.value} />
+              ))}
+            </Picker>
           </View>
 
           <Text style={styles.label}>Trigger</Text>
           <View style={styles.pickerContainer}>
-            <RNPickerSelect
-              value={formData.trigger}
+            <Picker
+              selectedValue={formData.trigger}
               onValueChange={(value) => setFormData({ ...formData, trigger: value })}
-              items={triggers}
-              style={pickerSelectStyles}
-              placeholder={{ label: 'What prompted this?', value: null }}
-            />
+              style={styles.picker}
+            >
+              {triggers.map((item) => (
+                <Picker.Item key={String(item.value)} label={item.label} value={item.value} />
+              ))}
+            </Picker>
           </View>
         </View>
 
@@ -316,6 +329,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#d1d5db',
     borderRadius: 8,
+    overflow: 'hidden',
+  },
+  picker: {
+    width: '100%',
+    color: '#1f2937',
   },
   emotionSection: {
     backgroundColor: '#f0f9ff',
@@ -393,20 +411,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    color: '#1f2937',
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    color: '#1f2937',
-  },
-  placeholder: {
-    color: '#9ca3af',
-  },
-});

@@ -5,6 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // For local development with Expo, use your computer's IP address
 const API_URL = 'http://192.168.1.149:8080/api';
 
+let _logoutCallback = null;
+export const setLogoutCallback = (callback) => {
+  _logoutCallback = callback;
+};
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -32,25 +37,31 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
       try {
         const refreshToken = await AsyncStorage.getItem('refreshToken');
         const response = await axios.post(`${API_URL}/auth/refresh`, {
           refreshToken,
         });
-        
+
         const { token, refreshToken: newRefreshToken } = response.data;
         await AsyncStorage.setItem('token', token);
         await AsyncStorage.setItem('refreshToken', newRefreshToken);
-        
+
         originalRequest.headers.Authorization = `Bearer ${token}`;
         return api(originalRequest);
       } catch (refreshError) {
         await AsyncStorage.clear();
+        _logoutCallback?.();
         return Promise.reject(refreshError);
       }
     }
-    
+
+    if (error.response?.status === 403) {
+      await AsyncStorage.clear();
+      _logoutCallback?.();
+    }
+
     return Promise.reject(error);
   }
 );
